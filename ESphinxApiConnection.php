@@ -343,9 +343,7 @@ class ESphinxApiConnection extends ESphinxBaseConnection
 
         $this->sphinxClient->SetMaxQueryTime($criteria->queryTimeout !== null ? $criteria->queryTimeout : $this->_queryTimeout);
 
-        if (VER_COMMAND_SEARCH >= 0x11D) {
-            $this->applyOptions($criteria);
-        }
+        $this->applyOptions($criteria);
     }
 
 
@@ -447,7 +445,7 @@ class ESphinxApiConnection extends ESphinxBaseConnection
     {
         $this->sphinxClient->ResetFilters();
         $this->sphinxClient->ResetGroupBy();
-        $this->sphinxClient->ResetOverrides();
+        $this->sphinxClient->_overrides = array();
         $this->sphinxClient->SetLimits(0, 20);
         $this->sphinxClient->SetArrayResult(true);
         $this->sphinxClient->SetFieldWeights(array());
@@ -457,9 +455,8 @@ class ESphinxApiConnection extends ESphinxBaseConnection
         $this->sphinxClient->SetRankingMode(SPH_RANK_NONE);
         $this->sphinxClient->SetSortMode(SPH_SORT_RELEVANCE, "");
         $this->sphinxClient->SetSelect("*");
-        if (VER_COMMAND_SEARCH >= 0x11D) {
-            $this->sphinxClient->ResetQueryFlag();
-        }
+        $this->sphinxClient->_query_flags = 0;
+        $this->sphinxClient->_predictedtime = 0;
     }
 
     protected function execute()
